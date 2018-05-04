@@ -12,3 +12,6 @@ An app with all locations to fix your bike in Kortrijk.
 * Add website/link to detail view if needed
 * Fix homescreen
 
+## Screenshots
+
+<img src="images/screenshot-1.png" width="200"> <img src="images/screenshot-4.png" width="200"> <img src="images/screenshot-2.png" width="200"> <img src="images/screenshot-3.png" width="200">
