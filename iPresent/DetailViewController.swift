@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import MapKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     
+    @IBOutlet weak var myMap: MKMapView!
     // outlets for labels & image
     @IBOutlet weak var watLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
@@ -17,6 +19,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var activiteitsLabel: UITextView!
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var locationImage: UIImageView!
+    @IBOutlet weak var favButton: UIButton!
+    
     
     //
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
@@ -24,7 +28,22 @@ class DetailViewController: UIViewController {
     var currentDetail: Item? {
         // if currentDetail is set, show all info
         didSet{
-            showInfoDetail()
+            showInfoDetail();
+        }
+    }
+    
+    func checkIfExists() {
+        if let data = UserDefaults.standard.value(forKey:"favorites") as? Data {
+            // als er een waarde is
+            let allDetails = try? PropertyListDecoder().decode(Array<Item>.self, from: data);
+            
+            // loop over alle waarden + verander eventueel exists value
+            for onedetail in allDetails! {
+                if onedetail.locatienaam == currentDetail?.locatienaam {
+                self.favButton.setBackgroundImage(#imageLiteral(resourceName: "heartfilled"), for: .normal)
+                    print("Already in favorites");
+                }
+            }
         }
     }
     
@@ -34,12 +53,29 @@ class DetailViewController: UIViewController {
                 // remove activityindicator
                 self.activityIndicator.removeFromSuperview()
                 
+                self.myMap.centerCoordinate = CLLocationCoordinate2D(latitude: detail.NB, longitude: detail.OL)
+                
+                let region = MKCoordinateRegionMakeWithDistance(self.myMap.centerCoordinate, 200, 200)
+                self.myMap.region = region;
+                
                 // fill in all labels
                 self.locationLabel.text = detail.locatienaam
                 self.watLabel.text = detail.wat.uppercased()
                 self.staatLabel.text = detail.straat
                 self.activiteitsLabel.text = detail.activiteit
                 self.distanceLabel.text = "\(Int(detail.distance!)) m"
+                
+                if Int(detail.distance!) < 1000 {
+                    self.distanceLabel.text = "\(Int(detail.distance!)) m"
+                }else{
+                    self.distanceLabel.text = "\(Double(round(detail.distance!)/1000)) km"
+                }
+                
+                let annotation = MKPointAnnotation()
+                annotation.title = detail.wat
+                annotation.subtitle = detail.locatienaam
+                annotation.coordinate = CLLocationCoordinate2D(latitude: detail.NB, longitude: detail.OL)
+                self.myMap.addAnnotation(annotation);
                 
                 // switch for right icon
                 switch detail.wat {
@@ -59,12 +95,76 @@ class DetailViewController: UIViewController {
             }
         }
     }
+    
+    
+    @IBAction func addToFavorites(_ sender: UIButton) {
+       if let detail = currentDetail{
+        
+        var exists:Bool = false;
+        // uitlezen & decoden van favorites lokaal
+        if let data = UserDefaults.standard.value(forKey:"favorites") as? Data {
+            // als er een waarde is
+            var allDetails = try? PropertyListDecoder().decode(Array<Item>.self, from: data);
+            
+            // loop over alle waarden + verander eventueel exists value
+            for onedetail in allDetails! {
+                if onedetail.locatienaam == detail.locatienaam {
+                    exists = true;
+                }
+            }
+            
+            // als de value nog niet bestaat, append nieuwe detail + push to userdefaults
+            if !exists {
+                allDetails?.append(detail);
+                UserDefaults.standard.set(try? PropertyListEncoder().encode(allDetails), forKey:"favorites");
+                self.favButton.setBackgroundImage(#imageLiteral(resourceName: "heartfilled"), for: .normal)
 
+            }else{
+                allDetails = allDetails?.filter { $0.locatienaam != currentDetail?.locatienaam }
+                UserDefaults.standard.set(try? PropertyListEncoder().encode(allDetails), forKey:"favorites");
+                
+                self.favButton.setBackgroundImage(#imageLiteral(resourceName: "heart"), for: .normal)
+            }
+            
+            print(detail);
+        }else{
+            // als er nog geen data inzit
+            let allDetails = [detail];
+            UserDefaults.standard.set(try? PropertyListEncoder().encode(allDetails), forKey:"favorites");
+            self.favButton.setBackgroundImage(#imageLiteral(resourceName: "heartfilled"), for: .normal)
+        }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.myMap.delegate = self;
+        myMap.showsUserLocation = false;
+    
         // set gradient background
         setGradientBackground()
+        
+        favButton.setBackgroundImage(#imageLiteral(resourceName: "heart"), for: .normal)
+        
+        checkIfExists();
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        // create anotationview
+        if let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "bikeIcon") {
+            annotationView.annotation = annotation
+            return annotationView
+        }
+        
+        let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "bikeIcon")
+        
+        // setup annotationview
+        annotationView.annotation = annotation;
+        annotationView.canShowCallout = true;
+        annotationView.image = UIImage(named: "mapColor");
+        annotationView.frame.size = CGSize(width: 40, height: 53)
+        return annotationView
     }
     
     func setGradientBackground() {

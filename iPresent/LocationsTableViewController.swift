@@ -18,17 +18,6 @@ class LocationsTableViewCell: UITableViewCell {
     @IBOutlet weak var activiteitLabel: UILabel!
     @IBOutlet weak var distanceLabel: UILabel!
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        // select = light bluegreen color
-        if selected{
-            myView.backgroundColor = UIColor(displayP3Red: 117.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1)
-        }else{
-            myView.backgroundColor = UIColor(displayP3Red: 98.0/255.0, green: 120.0/255.0, blue: 208.0/255.0, alpha: 1)
-        }
-        
-    }
 }
 
 class LocationsTableViewController: UITableViewController, CLLocationManagerDelegate {
@@ -146,13 +135,21 @@ class LocationsTableViewController: UITableViewController, CLLocationManagerDele
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "helpCell", for: indexPath) as! LocationsTableViewCell
+        
+        let bgColorView = UIView()
+        bgColorView.backgroundColor = UIColor(displayP3Red: 117.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1)
+        cell.selectedBackgroundView = bgColorView
 
         // create cell and add values to outlets
         cell.activiteitLabel.lineBreakMode = .byWordWrapping
         cell.activiteitLabel.numberOfLines = 0
         cell.locationnameLabel?.text = locations[indexPath.row].locatienaam
         cell.activiteitLabel?.text = locations[indexPath.row].activiteit
-        cell.distanceLabel?.text =  "\(Int(locations[indexPath.row].distance!)) m"
+        if (Int(locations[indexPath.row].distance!)) < 1000 {
+            cell.distanceLabel?.text =  "\(Int(locations[indexPath.row].distance!)) m"
+        }else{
+            cell.distanceLabel?.text =  "\(Double(round(locations[indexPath.row].distance!)/1)/1000) km"
+        }
         
         // switch case to show right image
         switch locations[indexPath.row].wat {

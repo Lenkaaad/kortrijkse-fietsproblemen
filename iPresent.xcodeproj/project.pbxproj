@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E747953C20A0D60300B99476 /* FavoritesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E747953B20A0D60300B99476 /* FavoritesTableViewController.swift */; };
 		E7664CD8209B44A400DBB8B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7664CD7209B44A400DBB8B0 /* Assets.xcassets */; };
 		E7975814208B2B6D005B0A41 /* LocationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7975813208B2B6D005B0A41 /* LocationsTableViewController.swift */; };
 		E7975816208E4A0B005B0A41 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7975815208E4A0B005B0A41 /* MapViewController.swift */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E747953B20A0D60300B99476 /* FavoritesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTableViewController.swift; sourceTree = "<group>"; };
 		E7664CD7209B44A400DBB8B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7975813208B2B6D005B0A41 /* LocationsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsTableViewController.swift; sourceTree = "<group>"; };
 		E7975815208E4A0B005B0A41 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 				E7975813208B2B6D005B0A41 /* LocationsTableViewController.swift */,
 				E7975815208E4A0B005B0A41 /* MapViewController.swift */,
 				E7D047242098910B0069E05B /* DetailViewController.swift */,
+				E747953B20A0D60300B99476 /* FavoritesTableViewController.swift */,
 			);
 			path = iPresent;
 			sourceTree = "<group>";
@@ -149,6 +152,7 @@
 			files = (
 				E7975814208B2B6D005B0A41 /* LocationsTableViewController.swift in Sources */,
 				E7FE4C262088F39B00B1AA31 /* datamodel.swift in Sources */,
+				E747953C20A0D60300B99476 /* FavoritesTableViewController.swift in Sources */,
 				E7FE4C162088F2C200B1AA31 /* ViewController.swift in Sources */,
 				E7D047252098910B0069E05B /* DetailViewController.swift in Sources */,
 				E7975816208E4A0B005B0A41 /* MapViewController.swift in Sources */,
